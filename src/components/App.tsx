@@ -8,8 +8,15 @@ interface AppProps {
   fetchTodos: Function;
   deleteTodo: typeof deleteTodo;
 }
+
 class _App extends React.Component<AppProps> {
+  state = { loading: false };
+  componentDidUpdate(prevProps: AppProps): void {
+    if (!prevProps.todos.length && this.props.todos.length)
+      this.setState({ loading: false });
+  }
   onButtonClick = (): void => {
+    this.setState({ loading: true });
     this.props.fetchTodos();
   };
   onTodoClick = (id: number): void => {
@@ -28,6 +35,7 @@ class _App extends React.Component<AppProps> {
     return (
       <div>
         <button onClick={this.onButtonClick}>Fetch</button>
+        {this.state.loading && <div>Loading...</div>}
         <div>{this.renderList()}</div>
       </div>
     );
